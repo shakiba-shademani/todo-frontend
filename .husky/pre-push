@@ -1,0 +1,32 @@
+
+# Check if there are uncommitted changes
+  git diff-index --quiet HEAD -- ||
+ ( echo "❌ You have uncommitted changes that need to be committed before pushing. ❌"
+  echo "Please commit your changes and try again."
+  false;
+  )
+
+# Check ESLint Standards
+npm run lint ||
+(
+    echo '❌ ESLint Check Failed. Make the required changes listed above and try to commit again. ❌'
+    false;
+)
+
+# build the project
+npm run build ||
+(
+    echo '❌ Build failed: View the errors ❌'
+    false
+)
+
+echo "?? Checking TypeScript types..."
+npx tsc --noEmit --skipLibCheck ||
+(
+    echo '? TypeScript errors found. Fix them before pushing. ?'
+    false;
+)
+
+
+# If everything is fine, continue
+echo '✅✅✅✅ Pushing to remote... ✅✅✅✅'
